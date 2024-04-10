@@ -1,196 +1,107 @@
-// // import { PrismaClient } from "@prisma/client";
-// // import { db } from "../src/utils/db.server";
+// import { PrismaClient, } from '@prisma/client'
+import { db } from "../src/utils/db.server";
+import * as CryptoJs from "crypto-js";
+import AES from 'crypto-js/aes';
+
+const prisma = db;
 
 
-// // const prisma = new PrismaClient();
 
-// // type User = {
-// //   email: string;
-// //   name: string;
-// // };
+async function seedUsers() {
+  try {
+    // Define an array of user data
+    const userData = [
+      {
+        name: 'john Doe',
+        email: 'john.doe@example.com',
+        password: AES.encrypt(
+          "123456",
+          process.env.SECRET
+        ).toString(),
+        
+      },
+      {
+        name: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        password: AES.encrypt(
+          "123456",
+          process.env.SECRET
+        ).toString(),
+      },
 
-// // type Appointment = {
-// //   email: string;
-// //   name: string;
-// //   phone: string;
-// //   address: string;
-// //   date: string;
-// // };
+      {
+        email: 'hana@hana.io',
+        name: 'Hana Gold',
+        password: AES.encrypt(
+          "123456",
+          process.env.SECRET
+        ).toString(),
+      }
+      // Add more user data as needed
+    ];
 
-// // async function seed() {
-// //   await prisma.user.create({
-// //     data: {
-// //       email: 'test@gmail.com12333',
-// //       name: 'ADMIN',
-// //     },
-// //   });
-
-// //   // await Promise.all(
-// //   //   getUsers().map((user) => {
-// //   //     return db.user.create({
-// //   //       data: {
-// //   //         name: user.name,
-// //   //         email: user.email,
-// //   //       },
-// //   //     });
-// //   //   })
-// //   // );
-
-// //   // const user = await db.user.findFirst({
-// //   //   where: {
-// //   //     name: "dammy",
-// //   //   },
-// //   // });
-
-
-// //   // await Promise.all(
-// //   //   getAppointments().map((appointment) => {
-// //   //     const { name, email,phone,address,date } = appointment;
-// //   //     return db.appointment.create({
-// //   //       data: {
-// //   //           name, email,phone,address,date, userId: user?.id || 1
-// //   //       },
-// //   //     });
-// //   //   })
-// //   // );
-// // }
-
-// // seed();
+    // Create users in the database
+    await Promise.all(
+      userData.map(async (user) => {
+        await prisma.user.create({
+          data: user,
+        });
+      })
+    );
 
 
-// // function getUsers(): Array<User> {
-// //     return [
-// //       {
-// //         name: "Johndoe",
-// //         email: "john@gmail.com",
-// //       },
-// //       {
-// //         name: "mike",
-// //         email: "mike123@gmail.com",
-// //       },
-// //       {
-// //         name: "dammy",
-// //         email: "dammy@gmail.com",
-// //       },
-// //     ];
-// //   }
+    const appointmentsData =  [
+      {
+        email: 'john.doe@example.com',
+        name: 'Appointment 1',
+        phone: '123456789',
+        address:"lagos ajoa",
+        date: new Date('2024-04-05T12:00:00Z'),
+      },
+      {
+        email: 'jane.smith@example.com',
+        name: 'Appointment 2',
+        phone: '987654321',
+        address: '456 Elm St',
+        date: new Date('2024-04-05T12:00:00Z'),
+      },
+    ];
+
   
-// //   function getAppointments(): Array<Appointment> {
-// //     return [
-// //       {
-// //         name: "Johndoe",
-// //         email: "gggggg11@gmail.com",
-// //         phone: "1111111",
-// //         address: "ddd",
-// //         date: "date",
-// //       },
-// //     ];
-// //   }
+
+    const author = await prisma.user.findFirst({
+      where: {
+        email: "john.doe@example.com",
+      },
+    });
   
 
 
-// import { PrismaClient } from "@prisma/client";
-// // import { db } from "../src/utils/db.server";
 
-// // Instantiate Prisma client
-// const prisma = new PrismaClient();
-
-// // Define the data to seed
-// const userData = [
-//   { name: "John Doe", email: "john@example.com" },
-//   { name: "Jane Smith", email: "jane@example.com" },
-// ];
-
-// const appointmentData = [
-//   { name: "John Doe", email: "john@example.com", phone: "1111111", address: "123 Main St", date: "2024-04-05", userId: 1113  },
-//   { name: "Jane Smith", email: "jane@example.com", phone: "2222222", address: "456 Elm St", date: "2024-04-06", userId: 1112  },
-// ];
-
-// // Function to seed data into users table
-// async function seedUsers() {
-//   try {
-//     // Use Prisma client to create users
-//     await Promise.all(userData.map(user => {
-//       return prisma.user.create({
-//         data: user,
-//       });
-//     }));
-//     console.log('Users seeded successfully');
-//   } catch (error) {
-//     console.error('Error seeding users:', error);
-//   }
-// }
-
-// // Function to seed data into appointments table
-// async function seedAppointments() {
-//   try {
-//     // Use Prisma client to create appointments
-//     await Promise.all(appointmentData.map(appointment => {
-//       return prisma.appointment.create({
-//         data: appointment,
-//       });
-//     }));
-//     console.log('Appointments seeded successfully');
-//   } catch (error) {
-//     console.error('Error seeding appointments:', error);
-//   }
-// }
-
-
-// async function main() {
-//   const hana = await prisma.user.create({
-//     data: {
-//       email: 'hana@hana.io',
-//       firstName: "hhfhffh",
-//     },
-//   })
-
-
-//   const newUser = await prisma.user.create({
-//     data: {
-//       firstname: 'John',
-//       lastname: 'Doe',  // Make sure to include the lastname field
-//       email: 'john@example.com',
-//       // Other fields...
-//     },
-//   });
+    await Promise.all(
+      appointmentsData.map( async (book) => {
+        const { email,name, date,phone,address} = book;
+        return prisma.appointment.create({
+          data: {
+            email,name, date,phone,address,
+            userId: author?.id || "",
+          },
+        });
+      })
+    );
   
 
-//   console.log(hana)
-// }
+    
 
-// main()
-//   .catch(console.error)
-//   .finally(() => prisma.$disconnect())
+    console.log('Users seeded successfully');
+  } catch (error) {
+    console.error('Error seeding users:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
 
-// // Function to seed data into the database
-// async function seedData() {
-//   await seedUsers();
-//   // await seedAppointments();
-//   // Disconnect Prisma client after seeding
-//   await prisma.$disconnect();
-// }
-
-// // Call the seedData function to initiate seeding
-// seedData();
-
-
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
-async function main() {
-  const hana = await prisma.user.create({
-    data: {
-      email: 'hana@hana.io',
-      firstName: 'Hana',
-      lastName: 'Gold',
-    },
-  })
-
-  console.log(hana)
 }
+// Call the seedUsers function
+seedUsers();
 
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect())
+

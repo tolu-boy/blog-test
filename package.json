@@ -6,7 +6,6 @@
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "nodemon src/index.ts"
@@ -28,9 +27,11 @@
   "dependencies": {
     "@prisma/client": "^5.12.1",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
     "prisma": "^5.12.1"
   }
 }

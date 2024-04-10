@@ -1,35 +1,37 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file.
+// Learn more about Prisma Schema in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// Generator for Prisma Client JS
 generator client {
   provider = "prisma-client-js"
-
 }
 
+// MongoDB datasource
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
+// User model represents users in the system
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  firstName String?
-  lastName  String?
-  email     String   @unique
-  appointment     AppointMent[]
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime   @default(now())   // Date and time when the user was created
+  name     String                       // Last name of the user
+  email    String   @unique  // Unique email address of the user
+  password  String
+  appointments  Appointment[]            // Appointments scheduled by the user
 }
 
-model AppointMent {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  email     String   @unique
-  body      String?
-  views     Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  String?  @db.ObjectId
+// Appointment model represents appointments made by users
+model Appointment {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique            // Unique email address associated with the appointment
+  name      String                        // Name of the appointment
+  phone     String                        // Phone number for the appointment
+  address   String                        // Address for the appointment
+  date      DateTime                      // Date and time of the appointment
+  createdAt DateTime   @default(now())    // Date and time when the appointment was created
+  updatedAt DateTime   @updatedAt         // Date and time when the appointment was last updated
+  user      User?       @relation(fields: [userId], references: [id], onDelete: Cascade) // User who made the appointment
+  userId    String?    @db.ObjectId       // Foreign key to the User model
 }
-
