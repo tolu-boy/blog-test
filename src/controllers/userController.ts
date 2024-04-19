@@ -1,4 +1,5 @@
 
+import { message } from "antd";
 import {db} from "../utils/db.server"
 import type { Request, Response } from "express";
 
@@ -20,4 +21,10 @@ export const getUsers = async (req: Request, res: Response) :Promise<void> => {
     } catch (error) {
         res.status(500).json(error);
     }
+};
+
+
+export const welcome = async (req: Request, res: Response) :Promise<void> => {
+        res.status(200).json({message: "welcome to the tailor made api"});
+   
 };

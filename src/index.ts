@@ -17,6 +17,7 @@ app.use(express.urlencoded({limit:"10mb", extended :true }))
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/appointment", appointmentRouter);
+app.use("/api/", userRouter);
 
 
 
