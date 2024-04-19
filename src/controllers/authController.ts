@@ -12,7 +12,7 @@ export type User = {
 
 export const createUsers = async (req: Request, res: Response) => {
   try {
-    const newUser = await db.user.create({
+    const newUser: User = await db.user.create({
       data: {
         email: req.body.email,
         name: req.body.name,
@@ -28,72 +28,44 @@ export const createUsers = async (req: Request, res: Response) => {
   }
 };
 
-
-export const loginUsers = async (req: Request, res: Response)=>{  
-
-    try {
-      const user   = await db.user.findUnique({
-        where: {
-          email: req.body.email
-        },
-        select: {
-          email: true,
-          password: true,
-          id:true
-        },
-      })
+export const loginUsers = async (req: Request, res: Response) => {
+  try {
+    const user: User = await db.user.findUnique({
+      where: {
+        email: req.body.email,
+      },
+      select: {
+        email: true,
+        password: true,
+        id: true,
+        name: true,
+      },
+    });
 
     !user && res.status(401).json("could not find a user");
-           const decryptedPassword = CryptoJs.AES.decrypt(
-           user.password,
-          process.env.SECRET
-        );
+    const decryptedPassword = CryptoJs.AES.decrypt(
+      user.password,
+      process.env.SECRET
+    );
 
-        const theRealPassword = decryptedPassword.toString(CryptoJs.enc.Utf8);
-        theRealPassword !== req.body.password && res.status(401).json("wrong username or password");
+    const theRealPassword = decryptedPassword.toString(CryptoJs.enc.Utf8);
+    theRealPassword !== req.body.password &&
+      res.status(401).json("wrong username or password");
 
-         const userToken = jwt.sign(
-          {
-            id: user.id,
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: "21d" }
-        );
-                const { password, ...others } = user ;
+    const userToken = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "21d" }
+    );
+    const { password, name, ...others } = user;
 
-  
-     res.status(200).json({ message: "user sign in sucesss",...others, token: userToken });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json("could not login check your credentials");
-    }
- 
-
-    // try {
-    //     const user = await User.findOne({ email: req.body.email });
-    //     console.log(user);
-    //     !user && res.status(401).json("could not find a user");
-    //     const decryptedPassword = CryptoJs.AES.decrypt(
-    //       user.password,
-    //       process.env.SECRET
-    //     );
-    //     const theRealPassword = decryptedPassword.toString(CryptoJs.enc.Utf8);
-    //     theRealPassword !== req.body.password &&
-    //       res.status(401).json("wrong username or password");
-    //     const userToken = jwt.sign(
-    //       {
-    //         id: user._id,
-    //       },
-    //       process.env.JWT_SECRET,
-    //       { expiresIn: "21d" }
-    //     );
-  
-    //     const { password, __v, createdAt, updatedAt, ...others } = user._doc;
-  
-    //     res.status(200).json({ ...others, token: userToken });
-    //   } catch (error) {
-    //     console.log(error);
-    //     res.status(500).json("could not login check your credentials");
-    //   }
-}
+    res
+      .status(200)
+      .json({ message: "user sign in sucesss", ...others, token: userToken });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("could not login check your credentials");
+  }
+};

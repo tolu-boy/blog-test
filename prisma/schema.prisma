@@ -32,6 +32,6 @@ model Appointment {
   date      DateTime                      // Date and time of the appointment
   createdAt DateTime   @default(now())    // Date and time when the appointment was created
   updatedAt DateTime   @updatedAt         // Date and time when the appointment was last updated
-  user      User?       @relation(fields: [userId], references: [id], onDelete: Cascade) // User who made the appointment
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade) // User who made the appointment
   userId    String?    @db.ObjectId       // Foreign key to the User model
 }

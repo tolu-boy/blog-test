@@ -3,6 +3,7 @@ import cors from "cors"
 import * as dotenv from "dotenv";
 import { userRouter } from "./routes/user";
 import { authRouter } from "./routes/auth";
+import { appointmentRouter } from "./routes/appointment";
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(express.json({limit:"10mb"}));
 app.use(express.urlencoded({limit:"10mb", extended :true }))
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/appointment", appointmentRouter);
 
 
 
