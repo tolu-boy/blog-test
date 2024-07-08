@@ -1,7 +1,7 @@
 import express from "express";
-import { getUsers, welcome } from "../controllers/userController";
+import { getUsers} from "../controllers/userController";
+const { verifyToken } = require("../middleware/verifyToken");
 
 export const userRouter = express.Router();
 
-userRouter.get("/", getUsers);
-userRouter.get("/welcome", welcome);
+userRouter.get("/",verifyToken, getUsers);
